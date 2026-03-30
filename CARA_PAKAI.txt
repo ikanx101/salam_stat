@@ -20,17 +20,21 @@
    Tekan Ctrl+C di terminal
 
 🎯 FITUR APLIKASI:
-- Tambah transaksi uang masuk/keluar
+- Tambah transaksi uang masuk/keluar (dengan password)
 - Lihat saldo otomatis
 - Riwayat transaksi lengkap
 - Export data ke CSV (download)
 - Hapus semua data transaksi
 - Interface Islami modern dan mudah
+- Kategori khusus musholla
+- Autentikasi password untuk keamanan
 
 ⚠️ CATATAN:
 - Pastikan Node.js sudah terinstall
 - Port 2222 tidak digunakan aplikasi lain
 - Data disimpan di file transactions.json
+- Password untuk tambah transaksi: Suntea101
+- Hanya untuk internal Musholla As Salaam
 
 🔧 TROUBLESHOOTING:
 - Jika port 2222 error, ubah di server.js baris 7

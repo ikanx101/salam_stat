@@ -14,6 +14,9 @@ app.use(express.static('public'));
 // File untuk menyimpan transaksi
 const TRANSACTIONS_FILE = 'transactions.json';
 
+// Password untuk autentikasi
+const REQUIRED_PASSWORD = 'Suntea101';
+
 // Inisialisasi file transaksi jika belum ada
 if (!fs.existsSync(TRANSACTIONS_FILE)) {
     fs.writeFileSync(TRANSACTIONS_FILE, JSON.stringify([], null, 2));
@@ -344,6 +347,13 @@ app.get('/', (req, res) => {
                     background: #f8f9fa;
                     color: #718096;
                     border-top: 1px solid #e9ecef;
+                    font-size: 0.9rem;
+                }
+                
+                .footer-note {
+                    margin-top: 10px;
+                    font-style: italic;
+                    color: #4a5568;
                 }
                 
                 .message {
@@ -427,23 +437,54 @@ app.get('/', (req, res) => {
                     background: #a51d2d;
                     color: white;
                 }
+                
+                .password-section {
+                    background: #e6fffa;
+                    border: 2px solid #81e6d9;
+                    border-radius: 10px;
+                    padding: 20px;
+                    margin-bottom: 25px;
+                }
+                
+                .password-section h3 {
+                    color: #234e52;
+                    margin-bottom: 15px;
+                    font-size: 1.1rem;
+                }
+                
+                .password-note {
+                    font-size: 0.9rem;
+                    color: #4a5568;
+                    margin-top: 10px;
+                    font-style: italic;
+                }
             </style>
         </head>
         <body>
             <div class="container">
                 <header>
                     <h1>As Salaam Finance Status</h1>
-                    <p class="subtitle">Kelola keuangan dengan berkah dan ketenangan</p>
+                    <p class="subtitle">Laporan Kas Musholla As Salaam Cluster Citra Residence Bekasi</p>
                 </header>
                 
                 <div class="main-content">
                     <div class="form-section">
+                        <div class="password-section">
+                            <h3>🔐 Autentikasi Transaksi</h3>
+                            <div class="form-group">
+                                <label for="password">Password Transaksi:</label>
+                                <input type="password" id="password" name="password" required 
+                                       placeholder="Masukkan password untuk menyimpan transaksi">
+                            </div>
+                            <p class="password-note">Hanya pengguna terotorisasi yang dapat menambah transaksi</p>
+                        </div>
+                        
                         <h2>➕ Tambah Transaksi Baru</h2>
                         <form id="transactionForm" method="POST" action="/add-transaction">
                             <div class="form-group">
                                 <label for="description">Deskripsi Transaksi:</label>
                                 <input type="text" id="description" name="description" required 
-                                       placeholder="Contoh: Gaji bulanan, Belanja kebutuhan, dll">
+                                       placeholder="Contoh: Iuran bulanan, Pembelian perlengkapan, dll">
                             </div>
                             
                             <div class="form-group">
@@ -475,16 +516,16 @@ app.get('/', (req, res) => {
                             <div class="form-group">
                                 <label for="category">Kategori:</label>
                                 <select id="category" name="category">
-                                    <option value="gaji">Gaji/Pendapatan</option>
-                                    <option value="investasi">Investasi</option>
-                                    <option value="hadiah">Hadiah/Bonus</option>
-                                    <option value="makanan">Makanan & Minuman</option>
-                                    <option value="transportasi">Transportasi</option>
-                                    <option value="belanja">Belanja</option>
-                                    <option value="hiburan">Hiburan</option>
-                                    <option value="kesehatan">Kesehatan</option>
-                                    <option value="pendidikan">Pendidikan</option>
-                                    <option value="sedekah">Sedekah/Zakat</option>
+                                    <option value="iuran">Iuran Bulanan</option>
+                                    <option value="infak">Infak Jumat</option>
+                                    <option value="sedekah">Sedekah Umum</option>
+                                    <option value="zakat">Zakat</option>
+                                    <option value="wakaf">Wakaf</option>
+                                    <option value="perlengkapan">Pembelian Perlengkapan</option>
+                                    <option value="listrik">Biaya Listrik/Air</option>
+                                    <option value="kebersihan">Kebersihan Musholla</option>
+                                    <option value="kegiatan">Kegiatan Keagamaan</option>
+                                    <option value="perbaikan">Perbaikan Musholla</option>
                                     <option value="lainnya">Lainnya</option>
                                 </select>
                             </div>
@@ -507,7 +548,7 @@ app.get('/', (req, res) => {
                     
                     <div class="transactions-section">
                         <div class="balance-card">
-                            <h3>Saldo Saat Ini</h3>
+                            <h3>Saldo Kas Musholla</h3>
                             <div class="balance-amount" id="currentBalance">Rp 0</div>
                             <p>Total dari semua transaksi</p>
                         </div>
@@ -531,8 +572,9 @@ app.get('/', (req, res) => {
                 </div>
                 
                 <footer>
-                    <p>© 2026 As Salaam Finance Status | Kelola keuangan dengan berkah</p>
-                    <p>Aplikasi ini berjalan di localhost:${PORT}</p>
+                    <p>© 2026 As Salaam Finance Status | Sistem Laporan Kas Musholla As Salaam</p>
+                    <p>Aplikasi ini berjalan di localhost:${PORT} | <strong>Dibuat oleh ikanx101.com</strong></p>
+                    <p class="footer-note">Hanya untuk penggunaan internal Cluster Citra Residence Bekasi</p>
                 </footer>
             </div>
             
@@ -540,7 +582,7 @@ app.get('/', (req, res) => {
             <div id="deleteConfirmModal" class="delete-confirm" style="display: none;">
                 <div class="delete-modal">
                     <h3>⚠️ Konfirmasi Hapus Semua Data</h3>
-                    <p>Apakah Anda yakin ingin menghapus SEMUA data transaksi? Tindakan ini tidak dapat dibatalkan dan semua data akan hilang permanen.</p>
+                    <p>Apakah Anda yakin ingin menghapus SEMUA data transaksi kas musholla? Tindakan ini tidak dapat dibatalkan dan semua data akan hilang permanen.</p>
                     <div class="modal-buttons">
                         <button type="button" onclick="hideDeleteConfirm()" class="modal-btn modal-cancel">❌ Batal</button>
                         <button type="button" onclick="deleteAllTransactions()" class="modal-btn modal-delete">🗑️ Hapus Semua</button>
@@ -631,16 +673,16 @@ app.get('/', (req, res) => {
                 // Get category name
                 function getCategoryName(category) {
                     const categories = {
-                        'gaji': 'Gaji/Pendapatan',
-                        'investasi': 'Investasi',
-                        'hadiah': 'Hadiah/Bonus',
-                        'makanan': 'Makanan & Minuman',
-                        'transportasi': 'Transportasi',
-                        'belanja': 'Belanja',
-                        'hiburan': 'Hiburan',
-                        'kesehatan': 'Kesehatan',
-                        'pendidikan': 'Pendidikan',
-                        'sedekah': 'Sedekah/Zakat',
+                        'iuran': 'Iuran Bulanan',
+                        'infak': 'Infak Jumat',
+                        'sedekah': 'Sedekah Umum',
+                        'zakat': 'Zakat',
+                        'wakaf': 'Wakaf',
+                        'perlengkapan': 'Pembelian Perlengkapan',
+                        'listrik': 'Biaya Listrik/Air',
+                        'kebersihan': 'Kebersihan Musholla',
+                        'kegiatan': 'Kegiatan Keagamaan',
+                        'perbaikan': 'Perbaikan Musholla',
                         'lainnya': 'Lainnya'
                     };
                     return categories[category] || category;
@@ -651,6 +693,7 @@ app.get('/', (req, res) => {
                     document.getElementById('transactionForm').reset();
                     document.getElementById('date').value = '${today}';
                     document.getElementById('type_masuk').checked = true;
+                    document.getElementById('password').value = '';
                 }
                 
                 // Handle form submission
@@ -661,13 +704,20 @@ app.get('/', (req, res) => {
                     const data = Object.fromEntries(formData);
                     data.amount = parseFloat(data.amount);
                     
+                    // Validasi password
+                    const password = document.getElementById('password').value;
+                    if (!password) {
+                        showMessage('Password harus diisi!', 'error');
+                        return;
+                    }
+                    
                     try {
                         const response = await fetch('/add-transaction', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify(data)
+                            body: JSON.stringify({...data, password: password})
                         });
                         
                         const result = await response.json();
@@ -697,7 +747,7 @@ app.get('/', (req, res) => {
                             const url = window.URL.createObjectURL(blob);
                             const a = document.createElement('a');
                             a.href = url;
-                            a.download = 'as-salaam-transactions.csv';
+                            a.download = 'kas-musholla-as-salaam.csv';
                             document.body.appendChild(a);
                             a.click();
                             document.body.removeChild(a);
@@ -802,12 +852,20 @@ app.get('/api/transactions', (req, res) => {
     });
 });
 
-// Endpoint untuk menambah transaksi
+// Endpoint untuk menambah transaksi dengan autentikasi
 app.post('/add-transaction', (req, res) => {
     try {
-        const { description, amount, type, date, category, notes } = req.body;
+        const { description, amount, type, date, category, notes, password } = req.body;
         
-        // Validasi
+        // Validasi password
+        if (!password || password !== REQUIRED_PASSWORD) {
+            return res.json({ 
+                success: false, 
+                message: 'Password salah atau tidak valid' 
+            });
+        }
+        
+        // Validasi data
         if (!description || !amount || !type || !date) {
             return res.json({ 
                 success: false, 
@@ -826,7 +884,8 @@ app.post('/add-transaction', (req, res) => {
             date: date,
             category: category || 'lainnya',
             notes: notes ? notes.trim() : '',
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            addedBy: 'Authorized User' // Bisa dikembangkan untuk multi-user
         };
         
         // Tambahkan ke array
@@ -899,7 +958,7 @@ app.get('/export-csv', (req, res) => {
         });
         
         res.header('Content-Type', 'text/csv');
-        res.attachment('as-salaam-transactions.csv');
+        res.attachment('kas-musholla-as-salaam.csv');
         res.send(csv);
     } catch (error) {
         console.error('Error exporting CSV:', error);
@@ -911,6 +970,7 @@ app.get('/export-csv', (req, res) => {
 app.listen(PORT, () => {
     console.log(`🚀 As Salaam Finance Status berjalan di http://localhost:${PORT}`);
     console.log(`📁 Data transaksi disimpan di: ${TRANSACTIONS_FILE}`);
+    console.log(`🔐 Password autentikasi: ${REQUIRED_PASSWORD}`);
     console.log('💡 Tekan Ctrl+C untuk menghentikan server');
-    console.log('✨ Fitur baru: Export CSV & Hapus Semua Data');
+    console.log('✨ Sistem Laporan Kas Musholla As Salaam Cluster Citra Residence Bekasi');
 });

@@ -4,7 +4,7 @@
 
 📌 DESKRIPSI APLIKASI
 Aplikasi web As Salaam Finance Status berbasis Node.js untuk mencatat dan mengelola 
-transaksi uang masuk dan keluar dengan prinsip keuangan Islami. Aplikasi ini berjalan di localhost:2222.
+transaksi kas Musholla As Salaam Cluster Citra Residence Bekasi. Aplikasi ini berjalan di localhost:2222.
 
 🌟 FITUR UTAMA:
 1. 📝 Input transaksi uang masuk/keluar
@@ -17,6 +17,8 @@ transaksi uang masuk dan keluar dengan prinsip keuangan Islami. Aplikasi ini ber
 8. 🎨 Interface user-friendly dengan desain Islami modern
 9. 📥 Download laporan CSV
 10. ⚠️ Konfirmasi sebelum hapus data
+11. 🔐 Sistem autentikasi password
+12. 🕌 Kategori khusus musholla
 
 📁 STRUKTUR FILE:
 - server.js          : File utama aplikasi Node.js
@@ -89,9 +91,14 @@ Buka browser dan kunjungi:
 
 GET  /                         : Halaman utama aplikasi
 GET  /api/transactions         : Mendapatkan semua transaksi (JSON)
-POST /add-transaction          : Menambah transaksi baru
+POST /add-transaction          : Menambah transaksi baru (dengan autentikasi password)
 POST /delete-all-transactions  : Menghapus semua transaksi (dengan konfirmasi)
 GET  /export-csv               : Export data ke CSV (download file)
+
+🔐 AUTENTIKASI:
+- Password yang diperlukan: Suntea101
+- Hanya untuk menambah transaksi baru
+- Tidak diperlukan untuk melihat data atau export
 
 📊 FORMAT DATA TRANSAKSI:
 Setiap transaksi memiliki format:
@@ -153,9 +160,9 @@ Jika mengalami masalah, cek:
 Atau buat issue di repository (jika menggunakan version control)
 
 🎉 SELAMAT MENCOBA!
-Aplikasi ini dibuat oleh mariBOT untuk membantu pengelolaan keuangan dengan prinsip Islami.
+Aplikasi ini dibuat oleh mariBOT untuk membantu pengelolaan kas Musholla As Salaam.
 Semoga bermanfaat dan membawa berkah! 💰📊🕌
 
 ===========================================
-© 2026 As Salaam Finance Status | mariBOT
+© 2026 As Salaam Finance Status | Dibuat oleh ikanx101.com
 ===========================================
