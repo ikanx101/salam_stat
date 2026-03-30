@@ -4,7 +4,7 @@
 
 📌 DESKRIPSI APLIKASI
 Aplikasi web As Salaam Finance Status berbasis Node.js untuk mencatat dan mengelola 
-transaksi kas Musholla As Salaam Cluster Citra Residence Bekasi. Aplikasi ini berjalan di localhost:2222.
+transaksi kas Musholla As Salaam Cluster Citra Residence Bekasi.
 
 🌟 FITUR UTAMA:
 1. 📝 Input transaksi uang masuk/keluar
@@ -92,12 +92,13 @@ Buka browser dan kunjungi:
 GET  /                         : Halaman utama aplikasi
 GET  /api/transactions         : Mendapatkan semua transaksi (JSON)
 POST /add-transaction          : Menambah transaksi baru (dengan autentikasi password)
-POST /delete-all-transactions  : Menghapus semua transaksi (dengan konfirmasi)
+POST /delete-all-transactions  : Menghapus semua transaksi (dengan autentikasi password)
 GET  /export-csv               : Export data ke CSV (download file)
 
 🔐 AUTENTIKASI:
-- Password yang diperlukan: Suntea101
-- Hanya untuk menambah transaksi baru
+- Password tambah transaksi: Suntea101
+- Password hapus data: Delete123!
+- Hanya untuk menambah transaksi baru dan menghapus semua data
 - Tidak diperlukan untuk melihat data atau export
 
 📊 FORMAT DATA TRANSAKSI:

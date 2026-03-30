@@ -16,6 +16,7 @@ const TRANSACTIONS_FILE = 'transactions.json';
 
 // Password untuk autentikasi
 const REQUIRED_PASSWORD = 'Suntea101';
+const DELETE_PASSWORD = 'Delete123!'; // Password khusus untuk hapus data
 
 // Inisialisasi file transaksi jika belum ada
 if (!fs.existsSync(TRANSACTIONS_FILE)) {
@@ -573,7 +574,7 @@ app.get('/', (req, res) => {
                 
                 <footer>
                     <p>© 2026 As Salaam Finance Status | Sistem Laporan Kas Musholla As Salaam</p>
-                    <p>Aplikasi ini berjalan di localhost:${PORT} | <strong>Dibuat oleh ikanx101.com</strong></p>
+                    <p><strong>Dibuat oleh ikanx101.com</strong></p>
                     <p class="footer-note">Hanya untuk penggunaan internal Cluster Citra Residence Bekasi</p>
                 </footer>
             </div>
@@ -583,6 +584,13 @@ app.get('/', (req, res) => {
                 <div class="delete-modal">
                     <h3>⚠️ Konfirmasi Hapus Semua Data</h3>
                     <p>Apakah Anda yakin ingin menghapus SEMUA data transaksi kas musholla? Tindakan ini tidak dapat dibatalkan dan semua data akan hilang permanen.</p>
+                    
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="deletePassword">Password Hapus Data:</label>
+                        <input type="password" id="deletePassword" placeholder="Masukkan password hapus data" style="margin-top: 5px;">
+                        <p style="font-size: 0.8rem; color: #718096; margin-top: 5px;">Password khusus diperlukan untuk menghapus semua data</p>
+                    </div>
+                    
                     <div class="modal-buttons">
                         <button type="button" onclick="hideDeleteConfirm()" class="modal-btn modal-cancel">❌ Batal</button>
                         <button type="button" onclick="deleteAllTransactions()" class="modal-btn modal-delete">🗑️ Hapus Semua</button>
@@ -770,16 +778,26 @@ app.get('/', (req, res) => {
                 // Hide delete confirmation modal
                 function hideDeleteConfirm() {
                     document.getElementById('deleteConfirmModal').style.display = 'none';
+                    document.getElementById('deletePassword').value = ''; // Reset password input
                 }
                 
                 // Delete all transactions
                 async function deleteAllTransactions() {
+                    const deletePassword = document.getElementById('deletePassword').value;
+                    
+                    // Validasi input password
+                    if (!deletePassword) {
+                        showMessage('Silakan masukkan password hapus data', 'error');
+                        return;
+                    }
+                    
                     try {
                         const response = await fetch('/delete-all-transactions', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                            }
+                            },
+                            body: JSON.stringify({ deletePassword })
                         });
                         
                         const result = await response.json();
@@ -790,7 +808,6 @@ app.get('/', (req, res) => {
                             loadTransactions();
                         } else {
                             showMessage('Gagal menghapus data: ' + result.message, 'error');
-                            hideDeleteConfirm();
                         }
                     } catch (error) {
                         showMessage('Terjadi kesalahan: ' + error.message, 'error');
@@ -913,9 +930,19 @@ app.post('/add-transaction', (req, res) => {
     }
 });
 
-// Endpoint untuk menghapus semua transaksi
+// Endpoint untuk menghapus semua transaksi (dengan autentikasi password)
 app.post('/delete-all-transactions', (req, res) => {
     try {
+        const { deletePassword } = req.body;
+        
+        // Validasi password
+        if (!deletePassword || deletePassword !== DELETE_PASSWORD) {
+            return res.json({ 
+                success: false, 
+                message: 'Password hapus data tidak valid' 
+            });
+        }
+        
         if (saveTransactions([])) {
             res.json({ 
                 success: true, 

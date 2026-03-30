@@ -14,7 +14,7 @@
    npm start     (untuk menjalankan)
 
 4. BUKA BROWSER:
-   Buka: http://localhost:2222
+    Buka aplikasi sesuai konfigurasi server
 
 5. UNTUK BERHENTI:
    Tekan Ctrl+C di terminal
@@ -34,6 +34,7 @@
 - Port 2222 tidak digunakan aplikasi lain
 - Data disimpan di file transactions.json
 - Password untuk tambah transaksi: Suntea101
+- Password untuk hapus semua data: Delete123!
 - Hanya untuk internal Musholla As Salaam
 
 🔧 TROUBLESHOOTING:
