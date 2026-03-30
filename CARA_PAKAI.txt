@@ -1,0 +1,40 @@
+📋 CARA CEPAT MENJALANKAN APLIKASI:
+
+1. BUKA TERMINAL:
+   Ctrl+Alt+T (Linux) atau buka Command Prompt/Terminal
+
+2. MASUK KE FOLDER APLIKASI:
+   cd /home/ikanx101/Documents/Aplikasi\ 1
+
+3. JALANKAN SCRIPT:
+   ./start.sh
+
+   ATAU secara manual:
+   npm install   (jika pertama kali)
+   npm start     (untuk menjalankan)
+
+4. BUKA BROWSER:
+   Buka: http://localhost:2222
+
+5. UNTUK BERHENTI:
+   Tekan Ctrl+C di terminal
+
+🎯 FITUR APLIKASI:
+- Tambah transaksi uang masuk/keluar
+- Lihat saldo otomatis
+- Riwayat transaksi lengkap
+- Export data ke CSV (download)
+- Hapus semua data transaksi
+- Interface Islami modern dan mudah
+
+⚠️ CATATAN:
+- Pastikan Node.js sudah terinstall
+- Port 2222 tidak digunakan aplikasi lain
+- Data disimpan di file transactions.json
+
+🔧 TROUBLESHOOTING:
+- Jika port 2222 error, ubah di server.js baris 7
+- Jika module error, hapus node_modules dan jalankan npm install
+- Cek error di terminal untuk detail masalah
+
+Selamat menggunakan! 💰📊
