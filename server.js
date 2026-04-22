@@ -213,6 +213,11 @@ app.get('/', (req, res) => {
                     background: linear-gradient(135deg, #a51d2d 0%, #7c1d2d 100%);
                     margin-top: 10px;
                 }
+
+                .btn-edit {
+                    background: linear-gradient(135deg, #1c71d8 0%, #1a5fb4 100%);
+                    margin-top: 10px;
+                }
                 
                 .balance-card {
                     background: linear-gradient(135deg, #26a269 0%, #2ec27e 100%);
@@ -237,6 +242,30 @@ app.get('/', (req, res) => {
                     margin-bottom: 15px;
                     border-left: 5px solid #1c71d8;
                     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+                    position: relative;
+                }
+
+                .transaction-actions {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+
+                .edit-btn {
+                    background: #1c71d8;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    padding: 5px 10px;
+                    font-size: 0.8rem;
+                    cursor: pointer;
+                    transition: background 0.3s;
+                }
+
+                .edit-btn:hover {
+                    background: #1a5fb4;
                 }
                 
                 .transaction-masuk {
@@ -383,7 +412,7 @@ app.get('/', (req, res) => {
                     border: 1px solid #fbd38d;
                 }
                 
-                .delete-confirm {
+                .delete-confirm, .edit-confirm {
                     position: fixed;
                     top: 0;
                     left: 0;
@@ -395,14 +424,19 @@ app.get('/', (req, res) => {
                     align-items: center;
                     z-index: 1000;
                 }
-                
-                .delete-modal {
+
+                .delete-modal, .edit-modal {
                     background: white;
                     padding: 30px;
                     border-radius: 15px;
                     max-width: 500px;
                     width: 90%;
                     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                }
+
+                .edit-modal h3 {
+                    color: #1c71d8;
+                    margin-bottom: 15px;
                 }
                 
                 .delete-modal h3 {
@@ -458,6 +492,20 @@ app.get('/', (req, res) => {
                     color: #4a5568;
                     margin-top: 10px;
                     font-style: italic;
+                }
+
+                .edit-password-section {
+                    background: #e6f7ff;
+                    border: 2px solid #91d5ff;
+                    border-radius: 10px;
+                    padding: 20px;
+                    margin-bottom: 25px;
+                }
+
+                .edit-password-section h3 {
+                    color: #096dd9;
+                    margin-bottom: 15px;
+                    font-size: 1.1rem;
                 }
             </style>
         </head>
@@ -577,26 +625,105 @@ app.get('/', (req, res) => {
                     <p><strong>Dibuat oleh ikanx101.com</strong></p>
                     <p class="footer-note">Hanya untuk penggunaan internal Cluster Citra Residence Bekasi</p>
                 </footer>
-            </div>
-            
-            <!-- Modal Konfirmasi Hapus -->
-            <div id="deleteConfirmModal" class="delete-confirm" style="display: none;">
-                <div class="delete-modal">
-                    <h3>⚠️ Konfirmasi Hapus Semua Data</h3>
-                    <p>Apakah Anda yakin ingin menghapus SEMUA data transaksi kas musholla? Tindakan ini tidak dapat dibatalkan dan semua data akan hilang permanen.</p>
-                    
-                    <div class="form-group" style="margin-top: 20px;">
-                        <label for="deletePassword">Password Hapus Data:</label>
-                        <input type="password" id="deletePassword" placeholder="Masukkan password hapus data" style="margin-top: 5px;">
-                        <p style="font-size: 0.8rem; color: #718096; margin-top: 5px;">Password khusus diperlukan untuk menghapus semua data</p>
-                    </div>
-                    
-                    <div class="modal-buttons">
-                        <button type="button" onclick="hideDeleteConfirm()" class="modal-btn modal-cancel">❌ Batal</button>
-                        <button type="button" onclick="deleteAllTransactions()" class="modal-btn modal-delete">🗑️ Hapus Semua</button>
-                    </div>
-                </div>
-            </div>
+             </div>
+
+             <!-- Modal Konfirmasi Hapus -->
+             <div id="deleteConfirmModal" class="delete-confirm" style="display: none;">
+                 <div class="delete-modal">
+                     <h3>⚠️ Konfirmasi Hapus Semua Data</h3>
+                     <p>Apakah Anda yakin ingin menghapus SEMUA data transaksi kas musholla? Tindakan ini tidak dapat dibatalkan dan semua data akan hilang permanen.</p>
+
+                     <div class="form-group" style="margin-top: 20px;">
+                         <label for="deletePassword">Password Hapus Data:</label>
+                         <input type="password" id="deletePassword" placeholder="Masukkan password hapus data" style="margin-top: 5px;">
+                         <p style="font-size: 0.8rem; color: #718096; margin-top: 5px;">Password khusus diperlukan untuk menghapus semua data</p>
+                     </div>
+
+                     <div class="modal-buttons">
+                         <button type="button" onclick="hideDeleteConfirm()" class="modal-btn modal-cancel">❌ Batal</button>
+                         <button type="button" onclick="deleteAllTransactions()" class="modal-btn modal-delete">🗑️ Hapus Semua</button>
+                     </div>
+                 </div>
+             </div>
+
+             <!-- Modal Edit Transaksi -->
+             <div id="editTransactionModal" class="edit-confirm" style="display: none;">
+                 <div class="edit-modal">
+                     <h3>✏️ Edit Transaksi</h3>
+
+                     <div class="edit-password-section">
+                         <h3>🔐 Autentikasi Edit</h3>
+                         <div class="form-group">
+                             <label for="editPassword">Password Edit:</label>
+                             <input type="password" id="editPassword" name="editPassword" required
+                                    placeholder="Masukkan password untuk mengedit transaksi">
+                         </div>
+                         <p class="password-note">Password yang sama dengan menambah transaksi: "Suntea101"</p>
+                     </div>
+
+                     <form id="editTransactionForm">
+                         <input type="hidden" id="editId" name="id">
+
+                         <div class="form-group">
+                             <label for="editDescription">Deskripsi Transaksi:</label>
+                             <input type="text" id="editDescription" name="description" required
+                                    placeholder="Contoh: Iuran bulanan, Pembelian perlengkapan, dll">
+                         </div>
+
+                         <div class="form-group">
+                             <label for="editAmount">Jumlah (Rp):</label>
+                             <input type="number" id="editAmount" name="amount" required
+                                    min="1" placeholder="100000">
+                         </div>
+
+                         <div class="form-group">
+                             <label>Jenis Transaksi:</label>
+                             <div class="radio-group">
+                                 <label class="radio-label">
+                                     <input type="radio" id="edit_type_masuk" name="type" value="masuk" required>
+                                     <span class="radio-text">Uang Masuk</span>
+                                 </label>
+                                 <label class="radio-label">
+                                     <input type="radio" id="edit_type_keluar" name="type" value="keluar" required>
+                                     <span class="radio-text">Uang Keluar</span>
+                                 </label>
+                             </div>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="editDate">Tanggal Transaksi:</label>
+                             <input type="date" id="editDate" name="date" required>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="editCategory">Kategori:</label>
+                             <select id="editCategory" name="category">
+                                 <option value="iuran">Iuran Bulanan</option>
+                                 <option value="infak">Infak Jumat</option>
+                                 <option value="sedekah">Sedekah Umum</option>
+                                 <option value="zakat">Zakat</option>
+                                 <option value="wakaf">Wakaf</option>
+                                 <option value="perlengkapan">Pembelian Perlengkapan</option>
+                                 <option value="listrik">Biaya Listrik/Air</option>
+                                 <option value="kebersihan">Kebersihan Musholla</option>
+                                 <option value="kegiatan">Kegiatan Keagamaan</option>
+                                 <option value="perbaikan">Perbaikan Musholla</option>
+                                 <option value="lainnya">Lainnya</option>
+                             </select>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="editNotes">Catatan Tambahan (opsional):</label>
+                             <textarea id="editNotes" name="notes" rows="3" placeholder="Tambahkan catatan jika diperlukan..."></textarea>
+                         </div>
+
+                         <div class="modal-buttons">
+                             <button type="button" onclick="hideEditModal()" class="modal-btn modal-cancel">❌ Batal</button>
+                             <button type="submit" class="modal-btn" style="background: #1c71d8; color: white;">💾 Simpan Perubahan</button>
+                         </div>
+                     </form>
+                 </div>
+             </div>
             
             <script>
                 // Fungsi untuk memuat transaksi
@@ -616,20 +743,20 @@ app.get('/', (req, res) => {
                     const currentBalance = document.getElementById('currentBalance');
                     const totalMasuk = document.getElementById('totalMasuk');
                     const totalKeluar = document.getElementById('totalKeluar');
-                    
+
                     // Update saldo
                     currentBalance.textContent = formatCurrency(data.balance);
-                    
+
                     // Update total masuk dan keluar
                     totalMasuk.textContent = formatCurrency(data.totalIncome);
                     totalKeluar.textContent = formatCurrency(data.totalExpense);
-                    
+
                     // Update daftar transaksi
                     if (data.transactions.length === 0) {
                         transactionsList.innerHTML = '<div class="no-transactions">Belum ada transaksi. Mulai tambahkan transaksi pertama Anda!</div>';
                         return;
                     }
-                    
+
                     let transactionsHTML = '';
                     data.transactions.forEach(transaction => {
                         const typeClass = transaction.type === 'masuk' ? 'transaction-masuk' : 'transaction-keluar';
@@ -639,14 +766,18 @@ app.get('/', (req, res) => {
                         const categoryName = getCategoryName(transaction.category);
                         const formattedDate = formatDate(transaction.date);
                         const formattedAmount = formatCurrency(transaction.amount);
-                        
+
                         let notesHTML = '';
                         if (transaction.notes && transaction.notes.trim() !== '') {
                             notesHTML = '<div class="transaction-description">' + transaction.notes + '</div>';
                         }
-                        
-                        transactionsHTML += 
+
+                        // Tambahkan tombol edit
+                        const editButton = '<button class="edit-btn" onclick="showEditModal(' + transaction.id + ')">✏️ Edit</button>';
+
+                        transactionsHTML +=
                             '<div class="transaction-item ' + typeClass + '">' +
+                                '<div class="transaction-actions">' + editButton + '</div>' +
                                 '<div class="transaction-header">' +
                                     '<div>' +
                                         '<strong>' + transaction.description + '</strong>' +
@@ -658,7 +789,7 @@ app.get('/', (req, res) => {
                                 notesHTML +
                             '</div>';
                     });
-                    
+
                     transactionsList.innerHTML = transactionsHTML;
                 }
                 
@@ -840,6 +971,92 @@ app.get('/', (req, res) => {
                     }, 5000);
                 }
                 
+                // Fungsi untuk menampilkan modal edit
+                function showEditModal(transactionId) {
+                    // Cari transaksi berdasarkan ID
+                    fetch('/api/transactions')
+                        .then(response => response.json())
+                        .then(data => {
+                            const transaction = data.transactions.find(t => t.id == transactionId);
+
+                            if (transaction) {
+                                // Isi form dengan data transaksi
+                                document.getElementById('editId').value = transaction.id;
+                                document.getElementById('editDescription').value = transaction.description;
+                                document.getElementById('editAmount').value = transaction.amount;
+                                document.getElementById('editDate').value = transaction.date;
+                                document.getElementById('editCategory').value = transaction.category;
+                                document.getElementById('editNotes').value = transaction.notes || '';
+
+                                // Set radio button berdasarkan jenis transaksi
+                                if (transaction.type === 'masuk') {
+                                    document.getElementById('edit_type_masuk').checked = true;
+                                } else {
+                                    document.getElementById('edit_type_keluar').checked = true;
+                                }
+
+                                // Reset password field
+                                document.getElementById('editPassword').value = '';
+
+                                // Tampilkan modal
+                                document.getElementById('editTransactionModal').style.display = 'flex';
+                            } else {
+                                showMessage('Transaksi tidak ditemukan', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading transaction:', error);
+                            showMessage('Gagal memuat data transaksi', 'error');
+                        });
+                }
+
+                // Fungsi untuk menyembunyikan modal edit
+                function hideEditModal() {
+                    document.getElementById('editTransactionModal').style.display = 'none';
+                    document.getElementById('editPassword').value = ''; // Reset password input
+                }
+
+                // Handle form edit submission
+                document.getElementById('editTransactionForm').addEventListener('submit', async function(e) {
+                    e.preventDefault();
+
+                    const formData = new FormData(this);
+                    const data = Object.fromEntries(formData);
+                    data.amount = parseFloat(data.amount);
+
+                    // Tambahkan password dari modal
+                    const password = document.getElementById('editPassword').value;
+                    if (!password) {
+                        showMessage('Password edit harus diisi!', 'error');
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('/edit-transaction', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({...data, password: password})
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            // Tampilkan pesan sukses
+                            showMessage('Transaksi berhasil diperbarui!', 'success');
+                            // Sembunyikan modal
+                            hideEditModal();
+                            // Reload transaksi
+                            loadTransactions();
+                        } else {
+                            showMessage('Gagal memperbarui transaksi: ' + result.message, 'error');
+                        }
+                    } catch (error) {
+                        showMessage('Terjadi kesalahan: ' + error.message, 'error');
+                    }
+                });
+
                 // Load transaksi saat halaman dimuat
                 document.addEventListener('DOMContentLoaded', loadTransactions);
             </script>
@@ -963,27 +1180,96 @@ app.post('/delete-all-transactions', (req, res) => {
     }
 });
 
+// Endpoint untuk edit transaksi per baris
+app.post('/edit-transaction', (req, res) => {
+    try {
+        const { id, description, amount, type, date, category, notes, password } = req.body;
+
+        // Validasi password
+        if (!password || password !== REQUIRED_PASSWORD) {
+            return res.json({
+                success: false,
+                message: 'Password salah atau tidak valid'
+            });
+        }
+
+        // Validasi data
+        if (!id || !description || !amount || !type || !date) {
+            return res.json({
+                success: false,
+                message: 'Data tidak lengkap'
+            });
+        }
+
+        const transactions = readTransactions();
+
+        // Cari transaksi berdasarkan ID
+        const transactionIndex = transactions.findIndex(t => t.id == id);
+
+        if (transactionIndex === -1) {
+            return res.json({
+                success: false,
+                message: 'Transaksi tidak ditemukan'
+            });
+        }
+
+        // Update transaksi
+        transactions[transactionIndex] = {
+            ...transactions[transactionIndex],
+            description: description.trim(),
+            amount: parseFloat(amount),
+            type: type,
+            date: date,
+            category: category || 'lainnya',
+            notes: notes ? notes.trim() : '',
+            updatedAt: new Date().toISOString(),
+            updatedBy: 'Authorized User'
+        };
+
+        // Simpan ke file
+        if (saveTransactions(transactions)) {
+            res.json({
+                success: true,
+                message: 'Transaksi berhasil diperbarui',
+                transaction: transactions[transactionIndex]
+            });
+        } else {
+            res.json({
+                success: false,
+                message: 'Gagal menyimpan perubahan ke file'
+            });
+        }
+    } catch (error) {
+        console.error('Error editing transaction:', error);
+        res.json({
+            success: false,
+            message: 'Terjadi kesalahan server'
+        });
+    }
+});
+
 // Endpoint untuk export data ke CSV
 app.get('/export-csv', (req, res) => {
     try {
         const transactions = readTransactions();
-        
+
         if (transactions.length === 0) {
             return res.status(400).send('Tidak ada data transaksi untuk diexport');
         }
-        
+
         // Header CSV
-        let csv = 'ID,Deskripsi,Jumlah,Jenis,Tanggal,Kategori,Catatan,Dibuat Pada\n';
-        
+        let csv = 'ID,Deskripsi,Jumlah,Jenis,Tanggal,Kategori,Catatan,Dibuat Pada,Diperbarui Pada\n';
+
         // Data transaksi
         transactions.forEach(t => {
             // Escape quotes in description and notes
             const desc = t.description.replace(/"/g, '""');
             const notes = t.notes ? t.notes.replace(/"/g, '""') : '';
-            
-            csv += `${t.id},"${desc}",${t.amount},${t.type},"${t.date}",${t.category},"${notes}","${t.createdAt}"\n`;
+            const updatedAt = t.updatedAt ? t.updatedAt : '';
+
+            csv += `${t.id},"${desc}",${t.amount},${t.type},"${t.date}",${t.category},"${notes}","${t.createdAt}","${updatedAt}"\n`;
         });
-        
+
         res.header('Content-Type', 'text/csv');
         res.attachment('kas-musholla-as-salaam.csv');
         res.send(csv);

@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "id": 1776834558457,
+    "description": "Sado awal",
+    "amount": 4000000,
+    "type": "masuk",
+    "date": "2026-01-01",
+    "category": "iuran",
+    "notes": "",
+    "createdAt": "2026-04-22T05:09:18.457Z",
+    "addedBy": "Authorized User"
+  },
+  {
+    "id": 1776834578434,
+    "description": "Bayar kebersihan",
+    "amount": 500000,
+    "type": "keluar",
+    "date": "2026-01-10",
+    "category": "iuran",
+    "notes": "",
+    "createdAt": "2026-04-22T05:09:38.434Z",
+    "addedBy": "Authorized User"
+  }
+]
